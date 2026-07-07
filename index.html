@@ -1,847 +1,334 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr" class="scroll-smooth">
+<html lang="fr" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BOUKS AUTO | Masterpiece Collection</title>
-    
-    <!-- Polices World-Class -->
-    <!-- Clash Display (Titres FR/EN), Manrope (Corps FR/EN), Alexandria (Arabe) -->
-    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;600;700;800&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- FontAwesome pour les icônes -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Tailwind CSS -->
+    <title>BOUKS AUTO | Showroom</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        heading: ['Clash Display', 'sans-serif'],
-                        body: ['Manrope', 'sans-serif'],
-                        arabic: ['Alexandria', 'sans-serif'],
-                    },
-                    colors: {
-                        bouks: {
-                            bg: '#050507', // Noir très profond (Obsidian)
-                            surface: '#0d0d12', // Gris très foncé pour les cartes
-                            surfaceHover: '#14141a',
-                            gold: '#C89B3C', // Champagne Gold / Bronze Luxe
-                            goldLight: '#E6C875',
-                            accent: '#F3F4F6' // Chrome / White
-                        }
-                    },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'reveal': 'reveal 1s cubic-bezier(0.77, 0, 0.175, 1) forwards',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        },
-                        reveal: {
-                            '0%': { opacity: '0', transform: 'translateY(40px) scale(0.98)' },
-                            '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-app: #f4f4f5;
+            --card-bg: #ffffff;
+            --primary: #18181b; /* Noir pro */
+            --accent: #2563eb; /* Bleu confiance kima Ouedkniss */
+            --danger: #ef4444; /* Rouge lel sbiha/a froid */
+        }
         body {
-            background-color: #050507;
-            color: #F3F4F6;
-            font-family: 'Manrope', sans-serif;
+            background-color: var(--bg-app);
+            color: var(--primary);
+            font-family: 'Tajawal', sans-serif; /* Police kbira w bayna mliha f tel */
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            overflow-x: hidden;
+            padding-bottom: 80px; /* lel bottom nav */
         }
-
-        /* Gestion des langues */
-        html[dir="rtl"] body { font-family: 'Alexandria', sans-serif; }
-        html[dir="rtl"] .font-heading { font-family: 'Alexandria', sans-serif; font-weight: 700; }
-        
-        /* Effet de grain de fond (Luxe texturé) */
-        .bg-grain {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0.03;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        /* Style Mobile First */
+        .mobile-container {
+            max-w-md; /* Tban kima teléphone hta f PC */
+            margin: 0 auto;
+            background: var(--bg-app);
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
         }
-
-        /* Lumières d'ambiance */
-        .ambient-light {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.15;
-            z-index: -1;
-            pointer-events: none;
+        /* Native Mobile Scroll (Swipe) */
+        .swipe-gallery {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* cacher scrollbar firefox */
         }
-        .light-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #C89B3C; }
-        .light-2 { bottom: 20%; right: -10%; width: 40vw; height: 40vw; background: #ffffff; }
-
-        /* Typography & Gradients */
-        .text-gradient-gold {
-            background: linear-gradient(135deg, #E6C875 0%, #C89B3C 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .swipe-gallery::-webkit-scrollbar { display: none; } /* cacher scrollbar chrome/safari */
+        .swipe-item {
+            flex: 0 0 100%;
+            scroll-snap-align: center;
         }
-
-        /* Cartes Voitures (World-Class Design) */
-        .car-card {
-            background: #0d0d12;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
+        /* Modal (Popup) Animation kima iPhone */
+        .modal-bottom-sheet {
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .car-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(200, 155, 60, 0.3);
-            box-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.8), 0 0 40px rgba(200, 155, 60, 0.05);
-        }
-        .car-card img {
-            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .car-card:hover img {
-            transform: scale(1.05);
-        }
-
-        /* Boutons Premium */
-        .btn-gold {
-            background: linear-gradient(135deg, #C89B3C, #A67C24);
-            color: #050507;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            transition: all 0.4s ease;
-        }
-        .btn-gold::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: all 0.6s ease;
-            z-index: -1;
-        }
-        .btn-gold:hover::before { left: 100%; }
-        .btn-gold:hover { box-shadow: 0 0 25px rgba(200, 155, 60, 0.4); }
-
-        /* Hide scrollbar pour des filtres propres */
-        .hide-scroll::-webkit-scrollbar { display: none; }
-        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* Custom Modal / Bottom Sheet Mobile */
-        #car-modal { backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
-        .modal-content-mobile { transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        @media (max-width: 768px) {
-            body { padding-bottom: 70px; }
-            .modal-content-mobile {
-                border-radius: 28px 28px 0 0 !important;
-                margin-top: auto;
-                height: 92vh !important;
-            }
-            .safe-bottom { padding-bottom: max(20px, env(safe-area-inset-bottom)); }
-        }
-
-        /* Intersection Observer Animation Classes */
-        .reveal-on-scroll {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .reveal-on-scroll.is-visible {
-            opacity: 1;
+        .modal-bottom-sheet.open {
             transform: translateY(0);
+        }
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .spec-item {
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
         }
     </style>
 </head>
-<body class="antialiased selection:bg-bouks-gold selection:text-black relative">
+<body>
 
-    <div class="bg-grain"></div>
-    <div class="ambient-light light-1"></div>
-    <div class="ambient-light light-2"></div>
-
-    <nav class="fixed w-full z-50 bg-[#050507]/80 backdrop-blur-xl border-b border-white/5 transition-all duration-500" id="navbar">
-        <div class="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20 md:h-24">
-                
-                <!-- Logo BOUKS AUTO -->
-                <div class="flex items-center gap-3 cursor-pointer group" onclick="window.scrollTo(0,0)">
-                    <!-- Icône abstraite pour le luxe -->
-                    <div class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center border border-bouks-gold/30 rounded-full group-hover:border-bouks-gold transition-all duration-500">
-                        <svg class="w-5 h-5 md:w-6 md:h-6 text-bouks-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="font-heading text-2xl md:text-3xl font-bold tracking-widest text-white leading-none uppercase">BOUKS<span class="text-bouks-gold">.</span></span>
-                        <span class="text-gray-400 font-body text-[9px] md:text-[10px] tracking-[0.3em] uppercase mt-1">Auto Collection</span>
-                    </div>
-                </div>
-                
-                <!-- Desktop Navigation -->
-                <div class="hidden md:flex items-center gap-8">
-                    <a href="#catalogue" class="text-sm font-semibold text-gray-300 hover:text-white transition tracking-wide uppercase"><span data-i18n="navStock">Collection</span></a>
-                    <a href="#" onclick="openToast('Bientôt disponible')" class="text-sm font-semibold text-gray-300 hover:text-white transition tracking-wide uppercase" data-i18n="navServices">Services</a>
-                    
-                    <!-- Language Switcher Elegance -->
-                    <div class="flex items-center gap-2 border-l border-white/10 pl-6 ml-2">
-                        <button onclick="changeLanguage('fr')" id="btn-lang-fr" class="lang-btn text-xs font-bold text-bouks-gold transition">FR</button>
-                        <span class="text-white/20">•</span>
-                        <button onclick="changeLanguage('en')" id="btn-lang-en" class="lang-btn text-xs font-bold text-gray-500 hover:text-white transition">EN</button>
-                        <span class="text-white/20">•</span>
-                        <button onclick="changeLanguage('ar')" id="btn-lang-ar" class="lang-btn text-xs font-bold text-gray-500 hover:text-white transition font-arabic">عربية</button>
-                    </div>
-
-                    <button class="btn-gold px-6 py-2.5 rounded-full font-bold text-sm tracking-wide shadow-lg flex items-center gap-2" onclick="window.open('https://wa.me/213000000000', '_blank')">
-                        <i class="fa-solid fa-phone-volume"></i> <span data-i18n="navContact">Contacter</span>
-                    </button>
-                </div>
+    <div class="mobile-container relative">
+        <!-- Header -->
+        <header class="bg-white p-4 sticky top-0 z-30 shadow-sm flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-extrabold uppercase tracking-widest text-gray-900">BOUKS<span class="text-blue-600">AUTO</span></h1>
+                <p class="text-[10px] text-gray-500 font-bold">VENTE & ACHAT AUTOMOBILE</p>
             </div>
-        </div>
-    </nav>
-
-    <nav class="md:hidden fixed bottom-0 w-full bg-[#050507]/95 backdrop-blur-2xl border-t border-white/5 z-[80] px-6 py-3 safe-bottom flex justify-between items-center shadow-[0_-10px_40px_rgba(0,0,0,0.8)]">
-        <a href="#accueil" class="flex flex-col items-center gap-1.5 text-bouks-gold">
-            <i class="fa-solid fa-layer-group text-xl"></i>
-            <span class="text-[9px] font-bold tracking-wider uppercase">Accueil</span>
-        </a>
-        <a href="#catalogue" class="flex flex-col items-center gap-1.5 text-gray-500 hover:text-white transition">
-            <i class="fa-solid fa-car text-xl"></i>
-            <span class="text-[9px] font-bold tracking-wider uppercase">Stock</span>
-        </a>
-        <button onclick="window.open('https://wa.me/213000000000', '_blank')" class="flex flex-col items-center gap-1.5 text-[#25D366]">
-            <i class="fa-brands fa-whatsapp text-2xl"></i>
-            <span class="text-[9px] font-bold tracking-wider uppercase">Contact</span>
-        </button>
-        <button onclick="changeLanguage(currentLang === 'fr' ? 'ar' : 'fr')" class="flex flex-col items-center gap-1.5 text-gray-500 hover:text-white transition">
-            <i class="fa-solid fa-globe text-xl"></i>
-            <span class="text-[9px] font-bold tracking-wider uppercase" id="mobile-lang-text">عربية</span>
-        </button>
-    </nav>
-
-    <section id="accueil" class="relative pt-32 pb-20 min-h-[90vh] flex flex-col justify-center items-center overflow-hidden">
-        
-        <div class="relative z-10 w-full max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            
-            <div class="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-bouks-surface border border-white/5 backdrop-blur-md mb-8 animate-reveal" style="animation-delay: 0.1s;">
-                <div class="w-2 h-2 rounded-full bg-bouks-gold animate-pulse"></div>
-                <span class="text-gray-300 text-xs font-bold tracking-[0.2em] uppercase" data-i18n="heroTrust">L'Élite Automobile. Transparence & Prestige.</span>
+            <div class="bg-gray-100 p-2 rounded-full">
+                <i class="fas fa-search text-gray-600"></i>
             </div>
-            
-            <h1 class="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-bold font-heading text-white mb-6 leading-[1.05] tracking-tight animate-reveal" style="animation-delay: 0.3s;">
-                <span data-i18n="heroTitle1">Redéfinissez</span> <br>
-                <span class="text-gradient-gold italic pr-2" data-i18n="heroTitle2">L'Excellence.</span>
-            </h1>
-            
-            <p data-i18n="heroSubtitle" class="text-base md:text-xl text-gray-400 mb-12 max-w-3xl mx-auto font-body animate-reveal leading-relaxed" style="animation-delay: 0.5s;">
-                Découvrez la collection privée BOUKS AUTO. Des véhicules rigoureusement sélectionnés, des transactions transparentes et une expérience de luxe inédite en Algérie.
-            </p>
+        </header>
 
-            <!-- Smart Search Bar Mondiale -->
-            <div class="max-w-4xl mx-auto animate-reveal" style="animation-delay: 0.7s;">
-                <div class="relative group">
-                    <div class="absolute inset-0 bg-bouks-gold rounded-full blur-xl opacity-10 group-hover:opacity-20 transition duration-700"></div>
-                    <div class="relative flex flex-col md:flex-row items-center bg-bouks-surface/90 border border-white/10 group-hover:border-bouks-gold/40 rounded-3xl md:rounded-full p-2 backdrop-blur-xl transition-all duration-300 shadow-2xl gap-2">
-                        
-                        <div class="flex-1 flex items-center w-full px-4 py-3 md:py-2">
-                            <i class="fa-solid fa-magnifying-glass text-bouks-gold text-lg mr-4 rtl:ml-4 rtl:mr-0"></i>
-                            <input type="text" id="smart-search" data-i18n-placeholder="searchPlaceholder" placeholder="Rechercher un modèle, marque, origine..." 
-                                   class="w-full bg-transparent border-none text-white focus:ring-0 text-base md:text-lg outline-none placeholder-gray-500 font-medium"
-                                   oninput="smartFilter()">
-                        </div>
+        <!-- Feed des voitures -->
+        <main class="p-3 space-y-4" id="catalog">
+            <!-- Voitures injectées hna -->
+        </main>
 
-                        <button onclick="document.getElementById('catalogue').scrollIntoView()" class="w-full md:w-auto btn-gold px-8 py-4 md:py-3.5 rounded-2xl md:rounded-full font-bold transition flex items-center justify-center gap-3">
-                            <span data-i18n="searchBtn">Explorer le Stock</span> <i class="fa-solid fa-arrow-right rtl:rotate-180"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Quick Tags (Scrollable on mobile) -->
-                <div class="flex overflow-x-auto hide-scroll justify-start md:justify-center gap-3 mt-8 pb-2 snap-x">
-                    <button onclick="setSearchTag('Mercedes')" class="snap-start flex-shrink-0 bg-bouks-surface border border-white/5 hover:border-bouks-gold px-6 py-2.5 rounded-full text-xs font-bold text-gray-300 hover:text-white transition tracking-wide uppercase">Mercedes-Benz</button>
-                    <button onclick="setSearchTag('Range Rover')" class="snap-start flex-shrink-0 bg-bouks-surface border border-white/5 hover:border-bouks-gold px-6 py-2.5 rounded-full text-xs font-bold text-gray-300 hover:text-white transition tracking-wide uppercase">Range Rover</button>
-                    <button onclick="setSearchTag('Safia')" class="snap-start flex-shrink-0 bg-bouks-surface border border-[#00e676]/30 px-6 py-2.5 rounded-full text-xs font-bold text-white transition flex items-center gap-2 tracking-wide uppercase"><div class="w-2 h-2 rounded-full bg-[#00e676]"></div> Dossier Safia</button>
-                    <button onclick="setSearchTag('Commande')" class="snap-start flex-shrink-0 bg-bouks-surface border border-white/5 hover:border-white/30 px-6 py-2.5 rounded-full text-xs font-bold text-gray-300 transition tracking-wide uppercase">Sur Commande</button>
-                </div>
-            </div>
-        </div>
-    </section>
+        <!-- Bottom Navigation (App Style) -->
+        <nav class="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-200 flex justify-around p-3 z-30 pb-5">
+            <a href="#" class="flex flex-col items-center text-blue-600">
+                <i class="fas fa-home text-xl mb-1"></i>
+                <span class="text-[10px] font-bold">Accueil</span>
+            </a>
+            <a href="#" class="flex flex-col items-center text-gray-400 hover:text-blue-600">
+                <i class="fas fa-car text-xl mb-1"></i>
+                <span class="text-[10px] font-bold">Stock</span>
+            </a>
+            <a href="https://wa.me/213XXXXXXXXX" class="flex flex-col items-center text-green-500">
+                <i class="fab fa-whatsapp text-xl mb-1"></i>
+                <span class="text-[10px] font-bold">Contact</span>
+            </a>
+        </nav>
+    </div>
 
-    <section id="catalogue" class="py-24 relative z-10">
-        <div class="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Modal (Fiche Voiture Détaillée kima Ouedkniss) -->
+    <div id="carModal" class="fixed inset-0 z-50 hidden bg-black/60">
+        <div class="absolute bottom-0 w-full max-w-md left-1/2 -translate-x-1/2 bg-white rounded-t-2xl h-[90vh] flex flex-col modal-bottom-sheet" id="modalSheet">
             
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6 reveal-on-scroll">
-                <div>
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-12 h-[1px] bg-bouks-gold"></div>
-                        <span class="text-bouks-gold text-xs font-bold tracking-[0.2em] uppercase" data-i18n="stockSubtitle">Inventaire Exclusif</span>
-                    </div>
-                    <h2 class="text-4xl md:text-5xl font-bold text-white font-heading tracking-tight" data-i18n="stockTitle">
-                        La Collection.
-                    </h2>
-                </div>
-                
-                <!-- Tri / Sort -->
-                <div class="flex items-center bg-bouks-surface p-1.5 rounded-xl border border-white/10">
-                    <select id="sort-select" onchange="sortCars()" class="bg-transparent text-gray-300 hover:text-white text-sm font-bold px-4 py-2 outline-none cursor-pointer tracking-wide appearance-none text-center">
-                        <option value="recent" class="bg-bouks-bg" data-i18n="sortRecent">Les plus récents</option>
-                        <option value="price-asc" class="bg-bouks-bg" data-i18n="sortPriceAsc">Prix : Croissant</option>
-                        <option value="price-desc" class="bg-bouks-bg" data-i18n="sortPriceDesc">Prix : Décroissant</option>
-                    </select>
-                    <i class="fa-solid fa-chevron-down text-bouks-gold text-xs pr-4 pointer-events-none"></i>
-                </div>
-            </div>
-
-            <!-- Grille d'affichage dynamique -->
-            <div id="car-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
-                <!-- Les cartes générées par JS vont ici -->
-            </div>
-            
-            <!-- Message si aucune voiture ne correspond -->
-            <div id="empty-state" class="hidden text-center py-32 bg-bouks-surface rounded-[2rem] border border-white/5 reveal-on-scroll">
-                <i class="fa-solid fa-car-side text-5xl text-gray-700 mb-6"></i>
-                <h3 class="text-2xl font-bold text-white font-heading mb-3" data-i18n="noResultsTitle">Aucun véhicule trouvé</h3>
-                <p class="text-gray-400 text-sm max-w-md mx-auto mb-8 font-body" data-i18n="noResultsDesc">La collection actuelle ne contient pas ce modèle. Contactez-nous pour une importation sur-mesure.</p>
-                <button onclick="clearSearch()" class="btn-gold px-8 py-3 rounded-full font-bold text-sm tracking-wide">
-                    Voir toute la collection
+            <!-- Header Modal -->
+            <div class="p-4 flex justify-between items-center border-b border-gray-100">
+                <h2 class="font-bold text-lg" id="modalTitle">Détails de l'annonce</h2>
+                <button onclick="closeModal()" class="bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center text-gray-600">
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
-        </div>
-    </section>
 
-    <div id="car-modal" class="fixed inset-0 z-[100] hidden items-end md:items-center justify-center p-0 md:p-6 opacity-0 transition-opacity duration-500 bg-black/80">
-        
-        <!-- Conteneur Principal -->
-        <div class="relative bg-bouks-bg md:rounded-[2rem] w-full h-full md:h-auto max-h-[92vh] md:max-h-[90vh] max-w-[1400px] flex flex-col lg:flex-row overflow-hidden shadow-2xl transform translate-y-full md:scale-95 transition-transform duration-500 border-0 md:border border-white/10 modal-content-mobile" id="modal-content">
-            
-            <!-- Bouton Fermer -->
-            <button onclick="closeModal()" class="absolute top-4 right-4 rtl:left-4 rtl:right-auto z-50 w-10 h-10 bg-black/40 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center text-white hover:bg-bouks-gold hover:text-black transition duration-300">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-
-            <!-- Partie Image (Gauche) -->
-            <div class="w-full lg:w-3/5 h-[35vh] lg:h-auto bg-[#020202] relative group overflow-hidden flex-shrink-0">
-                <img id="modal-img" src="" alt="Car" class="w-full h-full object-cover opacity-90 transition duration-1000 group-hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-t from-bouks-bg via-transparent to-black/40"></div>
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto pb-24">
                 
-                <!-- Badges de Confiance -->
-                <div class="absolute top-6 left-6 rtl:right-6 rtl:left-auto flex flex-col gap-2 z-10" id="modal-badges"></div>
+                <!-- Galerie Swipeable (Ndirou fiha tsawer) -->
+                <div class="relative">
+                    <div class="swipe-gallery h-64 bg-gray-900" id="modalGallery">
+                        <!-- Images hna -->
+                    </div>
+                    <div class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded-full backdrop-blur-sm">
+                        <i class="fas fa-exchange-alt mr-1"></i> Glisser
+                    </div>
+                </div>
+
+                <!-- Info Prix & Titre -->
+                <div class="p-4 border-b border-gray-100">
+                    <h3 class="text-2xl font-extrabold text-gray-900" id="modalName">Seat Ibiza 2018</h3>
+                    <p class="text-gray-500 text-sm mb-2" id="modalYearKm">2018 • 120 000 km</p>
+                    <div class="text-2xl font-black text-blue-600 bg-blue-50 inline-block px-3 py-1 rounded-lg" id="modalPrice">
+                        285 Millions
+                    </div>
+                </div>
+
+                <!-- Specs Ouedkniss Style -->
+                <div class="p-4">
+                    <h4 class="font-bold text-gray-800 mb-3"><i class="fas fa-list-alt mr-2 text-blue-600"></i>Caractéristiques</h4>
+                    <div class="spec-grid text-sm">
+                        <div class="spec-item">
+                            <span class="text-gray-500 block text-[11px] uppercase">Moteur</span>
+                            <strong id="moteurText" class="text-gray-800">1.6 MPI 110ch</strong>
+                        </div>
+                        <div class="spec-item">
+                            <span class="text-gray-500 block text-[11px] uppercase">Boîte</span>
+                            <strong id="boiteText" class="text-gray-800">Manuelle</strong>
+                        </div>
+                        <div class="spec-item">
+                            <span class="text-gray-500 block text-[11px] uppercase">Couleur</span>
+                            <strong id="couleurText" class="text-gray-800">Blanc</strong>
+                        </div>
+                        <div class="spec-item">
+                            <span class="text-gray-500 block text-[11px] uppercase">Papiers</span>
+                            <strong class="text-green-600"><i class="fas fa-check-circle mr-1"></i>Carte Grise</strong>
+                        </div>
+                    </div>
+
+                    <!-- La Peinture (Sbiha) - Très important f l'Algérie -->
+                    <div class="mt-4 p-3 bg-red-50 border border-red-100 rounded-lg">
+                        <span class="text-red-500 block text-[11px] uppercase font-bold mb-1"><i class="fas fa-paint-roller mr-1"></i>État de la tôle (Peinture)</span>
+                        <p id="sbihaText" class="text-gray-800 text-sm font-medium">Pare-choc avant + raccord f l'aile.</p>
+                    </div>
+                </div>
             </div>
 
-            <!-- Partie Détails (Droite) -->
-            <div class="w-full lg:w-2/5 flex flex-col h-[57vh] lg:h-auto relative bg-bouks-bg">
-                
-                <!-- En-tête -->
-                <div class="p-6 md:p-8 border-b border-white/5 flex-shrink-0">
-                    <p id="modal-brand" class="text-bouks-gold text-xs font-bold uppercase tracking-[0.2em] mb-2"></p>
-                    <h3 id="modal-title" class="text-3xl md:text-4xl font-bold text-white font-heading leading-tight mb-4"></h3>
-                    
-                    <div class="flex items-baseline gap-2">
-                        <span class="text-4xl md:text-5xl font-bold text-white font-heading" id="modal-price"></span>
-                        <span class="text-xl text-gray-500 font-body font-semibold" id="modal-currency">DZD</span>
-                    </div>
-                </div>
-
-                <!-- Onglets (Tabs) -->
-                <div class="flex border-b border-white/5 bg-bouks-surface/50 flex-shrink-0">
-                    <button onclick="switchTab('apercu')" id="tab-btn-apercu" class="tab-btn active flex-1 py-4 text-xs font-bold tracking-widest uppercase text-white border-b-2 border-bouks-gold transition">Aperçu</button>
-                    <button onclick="switchTab('finance')" id="tab-btn-finance" class="tab-btn flex-1 py-4 text-xs font-bold tracking-widest uppercase text-gray-500 border-b-2 border-transparent transition">Mourabaha</button>
-                </div>
-
-                <!-- Zone Scrollable (Specs) -->
-                <div class="flex-1 overflow-y-auto hide-scroll p-6 md:p-8">
-                    
-                    <div id="tab-apercu" class="space-y-6">
-                        <!-- Grille Specs -->
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="bg-bouks-surface p-4 rounded-2xl border border-white/5">
-                                <p class="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-1" data-i18n="specKm">Kilométrage</p>
-                                <p id="modal-km" class="text-lg font-bold text-white font-heading"></p>
-                            </div>
-                            <div class="bg-bouks-surface p-4 rounded-2xl border border-white/5">
-                                <p class="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-1" data-i18n="specFuel">Énergie</p>
-                                <p id="modal-fuel" class="text-lg font-bold text-white font-heading"></p>
-                            </div>
-                            <div class="bg-bouks-surface p-4 rounded-2xl border border-white/5">
-                                <p class="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-1" data-i18n="specYear">Année</p>
-                                <p id="modal-year" class="text-lg font-bold text-white font-heading"></p>
-                            </div>
-                            <div class="bg-bouks-surface p-4 rounded-2xl border border-white/5">
-                                <p class="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-1" data-i18n="specColor">Couleur</p>
-                                <p id="modal-color" class="text-lg font-bold text-white font-heading"></p>
-                            </div>
-                        </div>
-
-                        <!-- Origine et Papiers -->
-                        <div class="bg-[#101015] p-5 rounded-2xl border border-white/5 flex flex-col gap-3">
-                            <h4 class="text-xs font-bold text-bouks-gold uppercase tracking-widest mb-1">Dossier Légal</h4>
-                            <div class="flex items-center gap-3">
-                                <i class="fa-solid fa-file-shield text-gray-400 text-lg"></i>
-                                <div>
-                                    <p class="text-sm font-bold text-white" id="modal-papiers-title"></p>
-                                    <p class="text-[11px] text-gray-500 mt-0.5" id="modal-origine-desc"></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="tab-finance" class="hidden space-y-6">
-                        <div id="finance-calculator-container">
-                            <h4 class="text-xs font-bold text-bouks-gold uppercase tracking-widest mb-4">Simulation Crédit</h4>
-                            <div class="bg-bouks-surface p-5 rounded-2xl border border-white/5 mb-4">
-                                <div class="flex justify-between items-end mb-4">
-                                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Apport Personnel (30-80%)</label>
-                                    <span id="apport-value" class="text-white font-heading font-bold text-lg">0 DZD</span>
-                                </div>
-                                <input type="range" id="finance-slider" min="30" max="80" value="30" class="w-full h-1 bg-gray-700 rounded-full appearance-none cursor-pointer outline-none" oninput="calculateFinance()">
-                            </div>
-                            
-                            <div class="bg-[#101015] p-5 rounded-2xl border border-white/5">
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-2">Mensualité Estimée (60 mois)</p>
-                                <p class="text-3xl font-bold text-white font-heading" id="monthly-payment">0 DZD</p>
-                            </div>
-                        </div>
-                        <div id="finance-na-container" class="hidden text-center py-8">
-                            <p class="text-gray-400 text-sm">Ce véhicule n'est pas éligible au financement.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Footer d'Action (Sticky Bottom) -->
-                <div class="p-4 md:p-6 bg-bouks-bg border-t border-white/5 flex-shrink-0 flex gap-3 safe-bottom shadow-[0_-10px_20px_rgba(0,0,0,0.5)]">
-                    <button id="btn-whatsapp" class="flex-[2] bg-[#25D366] text-black font-bold py-3.5 px-4 rounded-xl transition flex justify-center items-center gap-2 hover:bg-[#1ebd5c]">
-                        <i class="fa-brands fa-whatsapp text-xl"></i> <span class="text-sm tracking-wide" data-i18n="btnNegocier">Négocier le Prix</span>
-                    </button>
-                    <button onclick="openToast('Service de reprise disponible sur place.')" class="flex-1 bg-white text-black font-bold py-3.5 px-2 rounded-xl transition flex justify-center items-center gap-2 hover:bg-gray-200">
-                        <i class="fa-solid fa-handshake text-lg"></i> <span class="text-sm tracking-wide hidden sm:inline" data-i18n="btnReprise">Reprise</span>
-                    </button>
-                </div>
-
+            <!-- Bouton Fixe lteht f l'annonce -->
+            <div class="absolute bottom-0 w-full p-4 bg-white border-t border-gray-100 pb-8">
+                <a id="whatsappBtn" href="#" class="w-full bg-[#25D366] text-white font-bold py-3 rounded-xl flex items-center justify-center shadow-lg hover:bg-green-600 transition">
+                    <i class="fab fa-whatsapp text-xl mr-2"></i> Contacter le Vendeur
+                </a>
             </div>
+
         </div>
     </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed top-10 left-1/2 -translate-x-1/2 z-[200] transform -translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-        <div class="bg-bouks-surface border border-white/10 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3">
-            <i class="fa-solid fa-info-circle text-bouks-gold"></i>
-            <span id="toast-msg" class="font-bold text-sm tracking-wide"></span>
-        </div>
-    </div>
-
 
     <script>
-        // =====================================================================
-        // --- 1. ZONE DE CONFIGURATION : DONNÉES DU SHOWROOM BOUKS AUTO ---
-        // Ajoutez, modifiez ou supprimez vos voitures ici.
-        // Prix en millions de DZD (ex: 850 = 850 Millions). 0 = Sur Commande.
-        // Mettez le lien de vos images dans la propriété "image".
-        // =====================================================================
-        const DATABASE_BOUKS_AUTO = [
+        /* ========================================================
+           ZONE DE CONFIGURATION (BOUKS AUTO)
+           
+           ATTENTION : 
+           - L'image dima dirha bin zouj guillemets " "
+           - Dima dir fasila , f lekher ta3 l'image
+           - Ida ma 3andekch image, kheliha fergha kima hak: ""
+           ======================================================== */
+        const voitures = [
             {
-                id: 1, 
-                brand: "Volkswagen", 
-                model: " Golf 8 GTD", 
-                year: 2022, 
-                price: "negociable", // En millions
-                km: "60000", 
-                fuel: "Diesel", 
-                color: "Gris",
-                papiers: "Dédouané", 
-                origine: "Importation (La chine)", 
-                isNew: true, 
-                timestamp: 1710000000,
-                // METTEZ VOTRE LIEN D'IMAGE ICI :
-                image: "xwcB2BUEcH0wyNR9zuAfcoYtvjMfYdaXNtQVev4q.webp";"sluZQTIi9PusSZY2EkyhjtJbr286YaLTLhZhYi3n.webp"
+                id: 1,
+                marque: "Seat",
+                modele: "Ibiza FR",
+                annee: "2018",
+                prix: "295 Millions",
+                km: "115 000 km",
+                moteur: "1.6 MPI 110ch",
+                boite: "Manuelle",
+                couleur: "Blanc",
+                sbiha: "N9iya (00 Peinture), fiha chwiya a froid f lbab.",
+                
+                // HNA ZID LES IMAGES TA3EK (Zid chhal theb)
+                images: [
+                    "https://images.unsplash.com/photo-1590362891991-f776e747a588?q=80&w=800", // Image 1
+                    "https://images.unsplash.com/photo-1553440569-bcc63803a83d?q=80&w=800", // Image 2
+                    "", // Image 3 (Fergha = ma tbanech, ma tdirch erreur)
+                    ""  // Image 4
+                ]
             },
             {
-                id: 2, 
-                brand: "Renault", 
-                model: "Clio 5 intense", 
-                year: 2023, 
-                price: 360, 
-                km: "57 000", 
-                fuel: "Essence", 
-                color: "Bleu",
-                papiers: "Carte Grise Safia", 
-                origine: "Achat Local", 
-                isNew: false, 
-                timestamp: 1705000000,
-                // METTEZ VOTRE LIEN D'IMAGE ICI :
-                image: "kMef8qMEuykLjmP9BDxTFj6egnKTxa1jtn8bG14k.webp";"CZacTs1fytjd2E0GVlsFgFxMxWYEyVuEAvGnxaaT.webp"
+                id: 2,
+                marque: "Renault",
+                modele: "Clio 4 GT Line",
+                annee: "2019",
+                prix: "270 Millions",
+                km: "140 000 km",
+                moteur: "1.5 DCI 85ch",
+                boite: "Manuelle",
+                couleur: "Gris Titane",
+                sbiha: "Sbiha f l'aile avant m3a l'capot.",
+                
+                images: [
+                    "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fd?q=80&w=800",
+                    "", 
+                    ""
+                ]
             },
             {
-                id: 3, 
-                brand: "Audi", 
-                model: "RSQ8 Sportback", 
-                year: 2024, 
-                price: 0, // 0 = Sur commande
-                km: "00", 
-                fuel: "Essence V8", 
-                color: "Gris Nardo",
-                papiers: "Licence Moudjahid requise", 
-                origine: "Sur Commande (Europe)", 
-                isNew: true, 
-                timestamp: 1712000000,
-                // METTEZ VOTRE LIEN D'IMAGE ICI :
-                image: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=1000&auto=format&fit=crop"
-            },
-            {
-                id: 4, 
-                brand: "Porsche", 
-                model: "Macan GTS", 
-                year: 2022, 
-                price: 1850, 
-                km: "32 000", 
-                fuel: "Essence", 
-                color: "Bleu Gentiane",
-                papiers: "Carte Grise Safia", 
-                origine: "Importation (Allemagne)", 
-                isNew: false, 
-                timestamp: 1700000000,
-                // METTEZ VOTRE LIEN D'IMAGE ICI :
-                image: "https://images.unsplash.com/photo-1503376760302-83f0453a4574?q=80&w=1000&auto=format&fit=crop"
+                id: 3,
+                marque: "Dacia",
+                modele: "Sandero Stepway",
+                annee: "2021",
+                prix: "280 Millions",
+                km: "65 000 km",
+                moteur: "1.5 DCI 85ch",
+                boite: "Manuelle",
+                couleur: "Gris Souris",
+                sbiha: "Voiture jdida 00 Peinture.",
+                
+                images: [
+                    "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=800",
+                    ""
+                ]
             }
         ];
 
-
-        // =====================================================================
-        // --- 2. DICTIONNAIRE MULTILINGUE (AR / FR / EN) ---
-        // =====================================================================
-        const i18n = {
-            fr: {
-                navStock: "Collection", navServices: "Services", navContact: "Contacter",
-                heroTrust: "L'Élite Automobile. Transparence & Prestige.",
-                heroTitle1: "Redéfinissez", heroTitle2: "L'Excellence.",
-                heroSubtitle: "Découvrez la collection privée BOUKS AUTO. Des véhicules rigoureusement sélectionnés, des transactions transparentes et une expérience de luxe inédite en Algérie.",
-                searchPlaceholder: "Rechercher un modèle, marque, origine...", searchBtn: "Explorer",
-                stockSubtitle: "Inventaire Exclusif", stockTitle: "La Collection.",
-                sortRecent: "Les plus récents", sortPriceAsc: "Prix : Croissant", sortPriceDesc: "Prix : Décroissant",
-                noResultsTitle: "Aucun véhicule trouvé", noResultsDesc: "La collection actuelle ne contient pas ce modèle.",
-                specKm: "Kilométrage", specFuel: "Énergie", specYear: "Année", specColor: "Couleur",
-                btnNegocier: "Négocier sur WhatsApp", btnReprise: "Reprise",
-                surCommande: "Sur Commande", million: "M", badgeNew: "NOUVEAU", badgeSafia: "Dossier Safia", badgeMoudjahid: "Licence"
-            },
-            en: {
-                navStock: "Collection", navServices: "Services", navContact: "Contact Us",
-                heroTrust: "Automotive Elite. Transparency & Prestige.",
-                heroTitle1: "Redefine", heroTitle2: "Excellence.",
-                heroSubtitle: "Discover the BOUKS AUTO private collection. Rigorously selected vehicles, transparent transactions, and an unprecedented luxury experience in Algeria.",
-                searchPlaceholder: "Search models, brands...", searchBtn: "Explore",
-                stockSubtitle: "Exclusive Inventory", stockTitle: "The Collection.",
-                sortRecent: "Most Recent", sortPriceAsc: "Price: Low to High", sortPriceDesc: "Price: High to Low",
-                noResultsTitle: "No vehicles found", noResultsDesc: "We currently don't have this model in our collection.",
-                specKm: "Mileage", specFuel: "Fuel", specYear: "Year", specColor: "Color",
-                btnNegocier: "Negotiate on WhatsApp", btnReprise: "Trade-in",
-                surCommande: "On Order", million: "M", badgeNew: "NEW", badgeSafia: "Cleared Papers", badgeMoudjahid: "License"
-            },
-            ar: {
-                navStock: "المجموعة", navServices: "الخدمات", navContact: "تواصل معنا",
-                heroTrust: "نخبة السيارات. شفافية ومصداقية.",
-                heroTitle1: "أعد اكتشاف", heroTitle2: "الامتياز.",
-                heroSubtitle: "اكتشف المجموعة الخاصة لـ BOUKS AUTO. سيارات مختارة بعناية، معاملات شفافة، وتجربة فاخرة غير مسبوقة في الجزائر.",
-                searchPlaceholder: "ابحث عن الموديل، العلامة التجارية...", searchBtn: "استكشف",
-                stockSubtitle: "مخزون حصري", stockTitle: "تشكيلة السيارات.",
-                sortRecent: "الأحدث", sortPriceAsc: "السعر: تصاعدي", sortPriceDesc: "السعر: تنازلي",
-                noResultsTitle: "لم يتم العثور على سيارات", noResultsDesc: "هذا الموديل غير متوفر حالياً في تشكيلتنا.",
-                specKm: "المسافة", specFuel: "الوقود", specYear: "السنة", specColor: "اللون",
-                btnNegocier: "تفاوض عبر واتساب", btnReprise: "تبادل",
-                surCommande: "تحت الطلب", million: "مليون", badgeNew: "جديد", badgeSafia: "ملف صافي", badgeMoudjahid: "رخصة"
-            }
-        };
-
-        // =====================================================================
-        // --- 3. LOGIQUE PRINCIPALE ---
-        // =====================================================================
-        let currentLang = 'fr';
-        let currentCars = [...DATABASE_BOUKS_AUTO];
-        let currentModalCarPrice = 0;
-
-        function formatPrice(priceNum) {
-            if (priceNum === 0) return i18n[currentLang].surCommande;
-            return priceNum + " " + i18n[currentLang].million;
-        }
-
-        function formatCurrencyExt() {
-            return currentLang === 'ar' ? 'دج' : 'DZD';
-        }
-
-        function changeLanguage(lang) {
-            currentLang = lang;
-            const dir = lang === 'ar' ? 'rtl' : 'ltr';
-            document.documentElement.setAttribute('dir', dir);
-            document.documentElement.setAttribute('lang', lang);
-
-            // Update UI buttons
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('text-bouks-gold');
-                btn.classList.add('text-gray-500');
-            });
-            document.getElementById(`btn-lang-${lang}`).classList.add('text-bouks-gold');
-            document.getElementById(`btn-lang-${lang}`).classList.remove('text-gray-500');
+        /* ========================================================
+           CODE D'AFFICHAGE (Ma t9iss walo hna)
+           ======================================================== */
+        function initApp() {
+            const catalog = document.getElementById('catalog');
+            catalog.innerHTML = '';
             
-            // Mobile Lang Toggle text
-            document.getElementById('mobile-lang-text').textContent = lang === 'fr' ? 'عربية' : 'FR';
+            voitures.forEach((car, index) => {
+                // njibou ghir l'image lwla li machi fergha
+                const firstImage = car.images.find(img => img.trim() !== '') || 'https://via.placeholder.com/800x600?text=Pas+d+image';
 
-            // Translations
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (i18n[lang][key]) el.innerHTML = i18n[lang][key];
-            });
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder');
-                if (i18n[lang][key]) el.setAttribute('placeholder', i18n[lang][key]);
-            });
-
-            renderCars();
-        }
-
-        function renderCars() {
-            const grid = document.getElementById('car-grid');
-            const emptyState = document.getElementById('empty-state');
-            grid.innerHTML = '';
-
-            if(currentCars.length === 0) {
-                grid.classList.add('hidden');
-                emptyState.classList.remove('hidden');
-                return;
-            }
-            grid.classList.remove('hidden');
-            emptyState.classList.add('hidden');
-
-            currentCars.forEach((car, index) => {
-                let badges = '';
-                if(car.isNew) badges += `<span class="bg-white text-black text-[9px] font-bold px-2.5 py-1 uppercase tracking-widest">${i18n[currentLang].badgeNew}</span>`;
-                if(car.papiers.includes('Safia')) badges += `<span class="bg-[#00e676] text-black text-[9px] font-bold px-2.5 py-1 uppercase tracking-widest flex items-center gap-1"><div class="w-1.5 h-1.5 bg-black rounded-full"></div> ${i18n[currentLang].badgeSafia}</span>`;
-                
-                const displayPrice = formatPrice(car.price);
-                const currency = car.price !== 0 ? `<span class="text-xs text-gray-500 font-body ml-1">${formatCurrencyExt()}</span>` : '';
-
-                const cardHTML = `
-                    <div class="car-card rounded-3xl reveal-on-scroll cursor-pointer flex flex-col h-full" onclick="openModal(${car.id})">
-                        <div class="relative h-64 md:h-72 overflow-hidden bg-[#020202]">
-                            <div class="absolute top-4 ${currentLang === 'ar' ? 'right-4' : 'left-4'} flex flex-col gap-2 z-10 items-start">
-                                ${badges}
-                            </div>
-                            <img src="${car.image}" alt="${car.model}" class="w-full h-full object-cover opacity-80" loading="lazy">
-                            <!-- Gradient overlay for premium dark feel -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#0d0d12] via-transparent to-transparent z-0 opacity-100"></div>
-                        </div>
-                        <div class="p-6 relative z-10 flex-1 flex flex-col">
-                            <p class="text-bouks-gold text-[10px] font-bold uppercase tracking-[0.2em] mb-1">${car.brand}</p>
-                            <h3 class="text-xl md:text-2xl font-bold text-white font-heading leading-tight mb-4">${car.model}</h3>
-                            
-                            <div class="grid grid-cols-2 gap-y-3 gap-x-2 text-xs text-gray-400 font-medium mb-6">
-                                <div class="flex items-center gap-2"><i class="fa-solid fa-gauge-high text-gray-600"></i> ${car.km} km</div>
-                                <div class="flex items-center gap-2"><i class="fa-solid fa-gas-pump text-gray-600"></i> ${car.fuel}</div>
-                                <div class="flex items-center gap-2 col-span-2"><i class="fa-solid fa-calendar text-gray-600"></i> Modèle ${car.year}</div>
-                            </div>
-
-                            <div class="mt-auto border-t border-white/5 pt-5 flex justify-between items-end">
-                                <div>
-                                    <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-1">Prix de vente</p>
-                                    <div class="font-heading font-bold text-2xl text-white tracking-tight">
-                                        ${displayPrice} ${currency}
-                                    </div>
-                                </div>
-                                <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-bouks-gold group-hover:bg-bouks-gold group-hover:text-black transition-all">
-                                    <i class="fa-solid fa-arrow-right rtl:rotate-180"></i>
-                                </div>
-                            </div>
+                catalog.innerHTML += `
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" onclick="openCarDetails(${index})">
+                    <div class="relative h-48">
+                        <img src="${firstImage}" class="w-full h-full object-cover">
+                        <div class="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] px-2 py-1 rounded font-bold backdrop-blur">
+                            <i class="far fa-images mr-1"></i> Photos
                         </div>
                     </div>
+                    <div class="p-3">
+                        <div class="flex justify-between items-start mb-1">
+                            <div>
+                                <span class="text-[10px] font-bold text-gray-400 uppercase">${car.marque}</span>
+                                <h2 class="text-base font-black text-gray-900 leading-tight">${car.modele}</h2>
+                            </div>
+                            <span class="bg-blue-50 text-blue-600 font-black px-2 py-1 rounded text-sm">${car.prix}</span>
+                        </div>
+                        <p class="text-gray-500 text-[11px] mb-3"><i class="fas fa-tachometer-alt mr-1"></i> ${car.km} • ${car.annee}</p>
+                        
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-50">
+                            <span class="text-[10px] text-gray-500 bg-gray-100 px-2 py-1 rounded"><i class="fas fa-gas-pump mr-1"></i>${car.moteur}</span>
+                            <span class="text-[10px] text-red-500 font-bold bg-red-50 px-2 py-1 rounded max-w-[120px] truncate"><i class="fas fa-paint-roller mr-1"></i>${car.sbiha}</span>
+                        </div>
+                    </div>
+                </div>
                 `;
-                grid.innerHTML += cardHTML;
             });
-            // Re-trigger scroll animations for newly added elements
-            observeElements();
         }
 
-        function smartFilter() {
-            const query = document.getElementById('smart-search').value.toLowerCase();
-            currentCars = DATABASE_BOUKS_AUTO.filter(car => {
-                const searchString = `${car.brand} ${car.model} ${car.year} ${car.fuel} ${car.origine} ${car.papiers}`.toLowerCase();
-                return query.split(' ').every(word => searchString.includes(word));
-            });
-            sortCars(false);
-        }
-
-        function setSearchTag(tag) {
-            document.getElementById('smart-search').value = tag;
-            smartFilter();
-        }
-
-        function clearSearch() {
-            document.getElementById('smart-search').value = '';
-            smartFilter();
-        }
-
-        function sortCars(reRender = true) {
-            const val = document.getElementById('sort-select').value;
-            if (val === 'recent') currentCars.sort((a, b) => b.timestamp - a.timestamp);
-            else if (val === 'price-asc') currentCars.sort((a, b) => (a.price === 0 ? 1 : b.price === 0 ? -1 : a.price - b.price));
-            else if (val === 'price-desc') currentCars.sort((a, b) => (a.price === 0 ? 1 : b.price === 0 ? -1 : b.price - a.price));
-            if(reRender) renderCars();
-        }
-
-        // =====================================================================
-        // --- 4. GESTION DE LA MODAL (FICHE VOITURE) ---
-        // =====================================================================
-        let currentModalCar = null;
-        
-        function openModal(id) {
-            currentModalCar = DATABASE_BOUKS_AUTO.find(c => c.id === id);
-            if(!currentModalCar) return;
+        function openCarDetails(index) {
+            const car = voitures[index];
+            const modal = document.getElementById('carModal');
+            const sheet = document.getElementById('modalSheet');
+            const gallery = document.getElementById('modalGallery');
             
-            // Setup Data
-            document.getElementById('modal-img').src = currentModalCar.image;
-            document.getElementById('modal-brand').textContent = currentModalCar.brand;
-            document.getElementById('modal-title').textContent = currentModalCar.model;
-            document.getElementById('modal-year').textContent = currentModalCar.year;
-            document.getElementById('modal-price').textContent = formatPrice(currentModalCar.price);
-            document.getElementById('modal-currency').textContent = currentModalCar.price !== 0 ? formatCurrencyExt() : '';
-            document.getElementById('modal-km').textContent = currentModalCar.km + " km";
-            document.getElementById('modal-fuel').textContent = currentModalCar.fuel;
-            document.getElementById('modal-color').textContent = currentModalCar.color;
-            document.getElementById('modal-papiers-title').textContent = currentModalCar.papiers;
-            document.getElementById('modal-origine-desc').textContent = currentModalCar.origine;
+            // Remplir les infos
+            document.getElementById('modalName').innerText = `${car.marque} ${car.modele}`;
+            document.getElementById('modalYearKm').innerText = `${car.annee} • ${car.km}`;
+            document.getElementById('modalPrice').innerText = car.prix;
+            document.getElementById('moteurText').innerText = car.moteur;
+            document.getElementById('boiteText').innerText = car.boite;
+            document.getElementById('couleurText').innerText = car.couleur;
+            document.getElementById('sbihaText').innerText = car.sbiha;
 
-            // Finance Tab Logic
-            if (currentModalCar.price > 0 && currentModalCar.papiers.includes('Safia')) {
-                document.getElementById('finance-calculator-container').classList.remove('hidden');
-                document.getElementById('finance-na-container').classList.add('hidden');
-                currentModalCarPrice = currentModalCar.price * 1000000;
-                document.getElementById('finance-slider').value = 30;
-                calculateFinance();
-            } else {
-                document.getElementById('finance-calculator-container').classList.add('hidden');
-                document.getElementById('finance-na-container').classList.remove('hidden');
-            }
+            // WhatsApp link
+            const msg = encodeURIComponent(`Salam, rani nsaqsi 3la la ${car.marque} ${car.modele} (${car.annee}) li rakom 7atinha b ${car.prix}.`);
+            document.getElementById('whatsappBtn').href = `https://wa.me/213XXXXXXXXX?text=${msg}`;
 
-            // WhatsApp Button Logic
-            document.getElementById('btn-whatsapp').onclick = () => {
-                let msg = currentLang === 'fr' 
-                    ? `Bonjour BOUKS AUTO, je suis intéressé par la ${currentModalCar.brand} ${currentModalCar.model} affichée à ${currentModalCar.price !== 0 ? currentModalCar.price+'M' : 'Sur Commande'}.`
-                    : `مرحباً، أنا مهتم بسيارة ${currentModalCar.brand} ${currentModalCar.model}.`;
-                window.open(`https://wa.me/213000000000?text=${encodeURIComponent(msg)}`, '_blank');
-            };
+            // Vider w remplir la galerie (ghir tsawer li fihom lien)
+            gallery.innerHTML = '';
+            car.images.forEach(imgLink => {
+                if(imgLink.trim() !== '') {
+                    gallery.innerHTML += `
+                    <div class="swipe-item relative">
+                        <img src="${imgLink}" class="w-full h-full object-cover">
+                    </div>
+                    `;
+                }
+            });
 
-            switchTab('apercu');
-
-            // Open Animation
-            const modal = document.getElementById('car-modal');
-            const content = document.getElementById('modal-content');
+            // Afficher le modal avec animation
             modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            void modal.offsetWidth; // trigger reflow
-            modal.classList.remove('opacity-0');
-            
-            // Detect if mobile (translateY) or desktop (scale)
-            if (window.innerWidth < 768) {
-                content.classList.remove('translate-y-full');
-            } else {
-                content.classList.remove('scale-95', 'translate-y-full');
-            }
+            setTimeout(() => { sheet.classList.add('open'); }, 10);
             document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
-            const modal = document.getElementById('car-modal');
-            const content = document.getElementById('modal-content');
-            modal.classList.add('opacity-0');
+            const modal = document.getElementById('carModal');
+            const sheet = document.getElementById('modalSheet');
             
-            if (window.innerWidth < 768) {
-                content.classList.add('translate-y-full');
-            } else {
-                content.classList.add('scale-95', 'translate-y-full');
-            }
-            
+            sheet.classList.remove('open');
             setTimeout(() => {
                 modal.classList.add('hidden');
-                modal.classList.remove('flex');
-                document.body.style.overflow = '';
-            }, 500);
+                document.body.style.overflow = 'auto';
+            }, 300); // waqt l'animation
         }
 
-        function switchTab(tabId) {
-            ['apercu', 'finance'].forEach(id => {
-                document.getElementById(`tab-${id}`).classList.add('hidden');
-                let btn = document.getElementById(`tab-btn-${id}`);
-                btn.classList.remove('active', 'text-white', 'border-bouks-gold');
-                btn.classList.add('text-gray-500', 'border-transparent');
-            });
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            let activeBtn = document.getElementById(`tab-btn-${tabId}`);
-            activeBtn.classList.add('active', 'text-white', 'border-bouks-gold');
-            activeBtn.classList.remove('text-gray-500', 'border-transparent');
-        }
-
-        function calculateFinance() {
-            const percentage = document.getElementById('finance-slider').value;
-            const apport = (currentModalCarPrice * percentage) / 100;
-            const remaining = currentModalCarPrice - apport;
-            const totalWithMargin = remaining * 1.09; // Estimation marge
-            const monthly = totalWithMargin / 60;
-            const formatMoney = (num) => new Intl.NumberFormat('fr-DZ').format(Math.round(num));
-            
-            document.getElementById('apport-value').innerHTML = `${formatMoney(apport)} <span class="text-xs text-gray-500 font-body ml-1">${formatCurrencyExt()}</span> <span class="text-xs text-bouks-gold ml-2">${percentage}%</span>`;
-            document.getElementById('monthly-payment').innerHTML = `${formatMoney(monthly)} <span class="text-lg text-gray-500 font-body ml-1">${formatCurrencyExt()}</span>`;
-        }
-
-        function openToast(message) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-msg').textContent = message;
-            toast.classList.remove('-translate-y-20', 'opacity-0');
-            setTimeout(() => toast.classList.add('-translate-y-20', 'opacity-0'), 3000);
-        }
-
-        // =====================================================================
-        // --- 5. ANIMATIONS AU SCROLL (Intersection Observer) ---
-        // =====================================================================
-        function observeElements() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry, index) => {
-                    if (entry.isIntersecting) {
-                        setTimeout(() => {
-                            entry.target.classList.add('is-visible');
-                        }, index * 100); // Effet cascade
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            document.querySelectorAll('.reveal-on-scroll').forEach((el) => observer.observe(el));
-        }
-
-        window.onload = () => {
-            sortCars(false);
-            renderCars();
-            
-            // Navbar Scroll Effect
-            window.addEventListener('scroll', () => {
-                const nav = document.getElementById('navbar');
-                if(window.scrollY > 50) {
-                    nav.classList.add('bg-[#050507]/95', 'shadow-2xl');
-                    nav.classList.remove('bg-[#050507]/80');
-                } else {
-                    nav.classList.remove('bg-[#050507]/95', 'shadow-2xl');
-                    nav.classList.add('bg-[#050507]/80');
-                }
-            });
-        };
+        initApp();
     </script>
 </body>
 </html>
