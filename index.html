@@ -184,13 +184,13 @@
             <!-- Scrollable content zone -->
             <div class="flex-1 overflow-y-auto hide-scrollbar pb-24">
                 
-                <!-- Native Gallery with Swipe Indicator -->
-                <div class="relative h-64 bg-slate-100">
+                <!-- Native Gallery with Swipe Indicator (HAUTEUR AGRANDIE h-96 pour les grands formats d'image) -->
+                <div class="relative h-96 bg-slate-900">
                     <div class="swipe-slider h-full w-full" id="modal-gallery-swiper" onscroll="updateGalleryTracker()">
                         <!-- Loaded dynamically -->
                     </div>
                     <!-- Counter badge -->
-                    <div class="absolute bottom-3 right-4 bg-black/70 backdrop-blur border border-white/10 text-white text-[10px] px-3 py-1.5 rounded-full font-bold z-10">
+                    <div class="absolute bottom-3 right-4 bg-black/75 backdrop-blur border border-white/10 text-white text-[10px] px-3 py-1.5 rounded-full font-bold z-10">
                         <i class="fa-regular fa-image mr-1.5 text-blue-400"></i><span id="gallery-counter">1 / 1</span>
                     </div>
                     <!-- Swipe helper overlay badge -->
@@ -523,7 +523,7 @@
                 id: 7,
                 marque: "Fiat",
                 modele: "Tipo Sedan Life",
-                annee: "2026",
+                annee: "2024",
                 prix: "Negociable",
                 km: "5 000 km",
                 moteur: "1.6 E-Torq 110ch",
@@ -795,8 +795,8 @@
                 feed.innerHTML += `
                 <div class="card-animate bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.02)] border border-slate-100 overflow-hidden">
                     
-                    <!-- Swipeable image slider in catalog feed card -->
-                    <div class="relative h-56 p-2">
+                    <!-- Swipeable image slider in catalog feed card (HAUTEUR DE LA CARTE AGRANDIE h-80 POUR METTRE EN VALEUR LES GRANDES IMAGES) -->
+                    <div class="relative h-80 p-2 bg-slate-100">
                         <div class="swipe-slider h-full w-full rounded-xl" 
                              onscroll="updateCardImageDot(this, ${car.id})"
                              onmousedown="registerTouchStart(event)" 
@@ -824,7 +824,7 @@
                     </div>
 
                     <!-- Card Body Specs Content -->
-                    <div class="p-4 pt-1 cursor-pointer" onclick="openCarDetails(${car.id})">
+                    <div class="p-4 pt-2 cursor-pointer" onclick="openCarDetails(${car.id})">
                         <div class="flex justify-between items-start mb-1">
                             <div>
                                 <span class="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest">${car.marque}</span>
@@ -892,7 +892,7 @@
 
             cleanImages.forEach(imgLink => {
                 swiperContainer.innerHTML += `
-                <div class="swipe-slide relative h-full w-full">
+                <div class="swipe-slide relative h-full w-full bg-slate-900 flex items-center justify-center">
                     <img src="${imgLink}" class="w-full h-full object-cover" alt="Detail Gallery slide" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f1f5f9/1e293b?text=BOUKS+AUTO';">
                 </div>
                 `;
